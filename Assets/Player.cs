@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    // Start is called before the first frame update
+    [SerializeField] PlayerInitializer initializer;
+
     void Start()
     {
-        
+        Vector3 startPos = transform.position + new Vector3(2, 0, 0);
+        initializer.Init(startPos, 5);
     }
 
     // Update is called once per frame

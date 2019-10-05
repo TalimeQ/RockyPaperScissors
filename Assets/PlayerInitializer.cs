@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PlayerInitializer : MonoBehaviour
 {
-    [SerializeField] GameObject healthPedestal;
+    [SerializeField] private GameObject healthPedestal;
+    [SerializeField] private float spawnOffset = 1.5f;
 
     public void Init(Vector3 startPosition, int pointsToScore)
     {
@@ -15,15 +16,20 @@ public class PlayerInitializer : MonoBehaviour
     {
         if(healthPedestal != null)
         {
+           Vector3 spawnPosition;
+           if(pointsToScore % 2 == 0)
+           {
+                spawnPosition = new Vector3(startPosition.x, startPosition.y, startPosition.z - Mathf.FloorToInt(pointsToScore / 2) * spawnOffset);     
+           }
+           else
+           {
+                spawnPosition = new Vector3(startPosition.x, startPosition.y, startPosition.z - Mathf.FloorToInt(pointsToScore / 2) * spawnOffset);
+            }
            for(int i = 0; i < pointsToScore; i ++)
            {
-                Instantiate(healthPedestal, startPosition, Quaternion.identity, transform.parent);
-                startPosition += new Vector3(0, 1, 0);
+                Instantiate(healthPedestal, spawnPosition, Quaternion.identity, transform);
+                spawnPosition += new Vector3(0, 0, spawnOffset);
            }
-        }
-        else
-        {
-
         }
     }
 }
