@@ -72,8 +72,6 @@ namespace RPS.Network
             if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
             {
                 Debug.Log("We load the 'Room for 1' ");
-
-
                 // #Critical
                 // Load the Room Level.
                 PhotonNetwork.LoadLevel("Game");

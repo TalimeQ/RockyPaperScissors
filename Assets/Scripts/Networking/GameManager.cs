@@ -17,7 +17,7 @@ namespace RPS.Network
         {
             SceneManager.LoadScene(0);
         }
-/*
+
         public override void OnPlayerEnteredRoom(Player other)
         {
             Debug.LogFormat("OnPlayerEnteredRoom() {0}", other.NickName); // not seen if you're the player connecting
@@ -45,7 +45,7 @@ namespace RPS.Network
                 LoadArena();
             }
         }
-        */
+
         #endregion
 
 
@@ -67,7 +67,7 @@ namespace RPS.Network
                 Debug.LogError("PhotonNetwork : Trying to Load a level but we are not the master Client");
             }
             Debug.LogFormat("PhotonNetwork : Loading Level : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
-            PhotonNetwork.LoadLevel("Room for " + PhotonNetwork.CurrentRoom.PlayerCount);
+            PhotonNetwork.LoadLevel("Game");
         }
 
         #endregion
