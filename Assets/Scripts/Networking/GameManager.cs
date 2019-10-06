@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,13 +9,51 @@ namespace RPS.Network
 {
     public class GameManager : MonoBehaviourPunCallbacks
     {
+        #region Serialized Variables
+        [Tooltip("The prefab to use for representing the player")]
+        [SerializeField] private List<Vector3> startPositions;
+        [Tooltip("The prefab to use for representing the player")]
+        [SerializeField] private List<Vector3> startRotations;
+        #endregion
 
+        #region
+        [Tooltip("The prefab to use for representing the player")]
+        public GameObject playerPrefab;
+        #endregion
+
+        #region MonoBehaviour Callbacks
+
+        private void Start()
+        {
+            if (playerPrefab == null)
+            {
+                Debug.LogError("<Color=Red><a>Missing</a></Color> playerPrefab Reference. Please set it up in GameObject 'Game Manager'", this);
+            }
+            else
+            {
+                if(PhotonNetwork.IsMasterClient)
+                {
+                    PhotonNetwork.Instantiate(this.playerPrefab.name, startPositions[0], Quaternion.identity, 0);
+                }   
+            }
+        }
+
+        #endregion
 
         #region Photon Callbacks
 
         public override void OnLeftRoom()
         {
             SceneManager.LoadScene(0);
+        }
+
+        public override void OnJoinedRoom()
+        {
+            base.OnJoinedRoom();
+            if(playerPrefab != null && !PhotonNetwork.IsMasterClient)
+            {
+                PhotonNetwork.Instantiate(this.playerPrefab.name, startPositions[PhotonNetwork.PlayerList.Length - 1], Quaternion.identity, 0);
+            }
         }
 
         public override void OnPlayerEnteredRoom(Player other)
@@ -47,7 +85,6 @@ namespace RPS.Network
         }
 
         #endregion
-
 
         #region Public Methods
 
