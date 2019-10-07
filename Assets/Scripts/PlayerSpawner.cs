@@ -1,14 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Photon.Pun;
 
 namespace RPS.PlayerComp
 {
-    public class Player : MonoBehaviour
+    public class PlayerSpawner : MonoBehaviour
     {
         [SerializeField] private PhotonView photonView;
-        [SerializeField] private GameObject healthPedestal;
+        [SerializeField] private GameObject scorePedestalPrefab;
+        [SerializeField] private PlayerController managedController;
         [SerializeField] private Vector3 posOffset = new Vector3(2, 0, 0); 
         [SerializeField] private float spawnOffset = 1.5f;
 
@@ -27,7 +26,7 @@ namespace RPS.PlayerComp
         {
             if (photonView.IsMine)
             {
-                Player.LocalPlayerInstance = this.gameObject;
+                PlayerSpawner.LocalPlayerInstance = this.gameObject;
             }
             DontDestroyOnLoad(this.gameObject);
         }
@@ -58,7 +57,7 @@ namespace RPS.PlayerComp
             for (int i = 0; i < pointsToScore; i++)
             {
                 int photonViewID = PhotonNetwork.AllocateViewID(false);
-                photonView.RPC("RPCSpawnHealthRepresentation", RpcTarget.AllBuffered, spawnPosition, 5, photonViewID);
+                photonView.RPC("RPCSpawnHealthRepresentation", RpcTarget.AllBuffered, spawnPosition, pointsToScore, photonViewID);
                 spawnPosition += new Vector3(0, 0, 1.5f);
             }
         }
@@ -68,14 +67,22 @@ namespace RPS.PlayerComp
             photonView.RPC("RPCRotateIfEven", RpcTarget.AllBuffered, roomPlayerCount);
         }
 
+        private void InitializeScorePedestal(int id, GameObject spawnedObj)
+        {
+            PhotonView view = spawnedObj.GetComponent<PhotonView>();
+            if (view != null) view.ViewID = id;
+            PlayerScore playerScore = spawnedObj.GetComponent<PlayerScore>();
+            if (playerScore != null) managedController.AddScorePedestal(playerScore);
+        }
+
+
         [PunRPC]
         private void RPCSpawnHealthRepresentation(Vector3 spawnPosition, int pointsToScore,int id)
         {
-            if (healthPedestal != null)
+            if (scorePedestalPrefab != null)
             {
-                    GameObject spawnedObj = Instantiate(healthPedestal, spawnPosition, Quaternion.identity, transform);
-                    PhotonView view = spawnedObj.GetComponent<PhotonView>();
-                    view.ViewID = id;
+                GameObject spawnedObj = Instantiate(scorePedestalPrefab, spawnPosition, Quaternion.identity, transform);
+                InitializeScorePedestal(id, spawnedObj);
             }
         }
 

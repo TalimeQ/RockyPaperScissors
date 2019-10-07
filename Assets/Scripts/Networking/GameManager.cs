@@ -1,109 +1,84 @@
-﻿using System.Collections.Generic;
-using System.Collections;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using Photon.Pun;
+﻿using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
-namespace RPS.Network
+public class GameManager : MonoBehaviourPunCallbacks
 {
-    public class GameManager : MonoBehaviourPunCallbacks
+    [SerializeField] PhotonView controlerView;
+    [SerializeField] List<PlayerController> playerList;
+
+    private GameState currentGameState = GameState.AwaitingPlayer;
+    private bool isComparingScores = false;
+    private int maxScore = 5;
+    private int battledScorePoint = 0;
+
+    public void AddPlayerController(PlayerController playerController)
     {
-        #region Serialized Variables
-        [Tooltip("The prefab to use for representing the player")]
-        [SerializeField] private List<Vector3> startPositions;
-        [Tooltip("The prefab to use for representing the player")]
-        [SerializeField] private List<Vector3> startRotations;
-        #endregion
+        playerList.Add(playerController);
+    }
 
-        #region
-        [Tooltip("The prefab to use for representing the player")]
-        public GameObject playerPrefab;
-        #endregion
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        Debug.Log("Entered!");
+        base.OnPlayerEnteredRoom(newPlayer);
+        currentGameState = GameState.Startup;
+        StartCoroutine(GameplayLoop());
+    }
 
-        #region MonoBehaviour Callbacks
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        base.OnPlayerLeftRoom(otherPlayer);
+        currentGameState = GameState.Finalizing;
+    }
 
-        private void Start()
+    private IEnumerator GameplayLoop()
+    {
+        WaitForSeconds delayTime = new WaitForSeconds(10);
+        while(currentGameState == GameState.Running)
         {
-            if (playerPrefab == null)
-            {
-                Debug.LogError("<Color=Red><a>Missing</a></Color> playerPrefab Reference. Please set it up in GameObject 'Game Manager'", this);
-            }
-            else
-            {
-                if (RPS.PlayerComp.Player.LocalPlayerInstance == null)
-                {
-                    int roomPlayerCount = PhotonNetwork.CurrentRoom.PlayerCount;
-                    GameObject obj = PhotonNetwork.Instantiate(this.playerPrefab.name, startPositions[roomPlayerCount - 1], Quaternion.identity, 0);
-                    obj.GetComponent<RPS.PlayerComp.Player>().Init(roomPlayerCount);
-                }
-            }
+            EnableChoice();
+            yield return delayTime;
+            CompareChoices();
+            yield return null;
+            battledScorePoint++;
+            // Wait for chocie
+            // Compare Choice
+            // Score
+
         }
+        
+    }
 
-        #endregion
+    private void EnableChoice()
+    {
+        Debug.Log("Chocies goin!");
+        controlerView.RPC("RPCEnableChoice", RpcTarget.All);
+    }
 
-        #region Photon Callbacks
+    private void CompareChoices()
+    {
+        Debug.Log("Comparing Choices");
+    }
 
-        public override void OnLeftRoom()
+    [PunRPC]
+    private void RPCEnableChoice()
+    {
+        foreach(PlayerController calledPlayer in playerList)
         {
-            SceneManager.LoadScene(0);
+            Debug.Log("RPC choices!");
+            calledPlayer.OnChoiceStart(battledScorePoint);
         }
+    }
 
-        public override void OnJoinedRoom()
-        {
-            base.OnJoinedRoom();
-        }
-
-        public override void OnPlayerEnteredRoom(Player other)
-        {
-            Debug.LogFormat("OnPlayerEnteredRoom() {0}", other.NickName); // not seen if you're the player connecting
-
-            if (PhotonNetwork.IsMasterClient)
-            {
-                Debug.LogFormat("OnPlayerEnteredRoom IsMasterClient {0}", PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
-                LoadArena();
-    
-            }
-        }
-
-        public override void OnPlayerLeftRoom(Player other)
-        {
-            Debug.LogFormat("OnPlayerLeftRoom() {0}", other.NickName); // seen when other disconnects
-
-
-            if (PhotonNetwork.IsMasterClient)
-            {
-                Debug.LogFormat("OnPlayerLeftRoom IsMasterClient {0}", PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
-
-
-                LoadArena();
-            }
-        }
-
-        #endregion
-
-        #region Public Methods
-
-        public void LeaveRoom()
-        {
-            PhotonNetwork.LeaveRoom();
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        private void LoadArena()
-        {
-            if (!PhotonNetwork.IsMasterClient)
-            {
-                Debug.LogError("PhotonNetwork : Trying to Load a level but we are not the master Client");
-            }
-            Debug.LogFormat("PhotonNetwork : Loading Level : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
-            PhotonNetwork.LoadLevel("Game");
-        }
-
-        #endregion
-
+    enum GameState
+    {
+        AwaitingPlayer,
+        Startup,
+        Running,
+        Finalizing,
+        Finished,
+        Unknown,
     }
 }

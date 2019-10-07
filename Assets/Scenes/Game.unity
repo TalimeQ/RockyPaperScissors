@@ -130,6 +130,8 @@ GameObject:
   m_Component:
   - component: {fileID: 477633712}
   - component: {fileID: 477633711}
+  - component: {fileID: 477633713}
+  - component: {fileID: 477633714}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -155,6 +157,7 @@ MonoBehaviour:
   startRotations:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 180, z: 0}
+  gameManager: {fileID: 477633713}
   playerPrefab: {fileID: 5373706816933658294, guid: 10d6e51dbaf891244a0255cd67eb3c2a,
     type: 3}
 --- !u!4 &477633712
@@ -171,6 +174,42 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &477633713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 477633710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c1e050052d081d4893e14c8aa2e4adf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controlerView: {fileID: 477633714}
+  playerList: []
+--- !u!114 &477633714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 477633710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 0
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 0}
+  viewIdField: 1
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &620647229
 GameObject:
   m_ObjectHideFlags: 0

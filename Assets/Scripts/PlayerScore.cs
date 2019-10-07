@@ -14,6 +14,13 @@ public class PlayerScore : MonoBehaviour, IPointerClickHandler
     private PhotonView photonController;
     private bool isActive = false;
 
+    private void Start()
+    {
+        photonController = GetComponent<PhotonView>();
+        healthRenderer = GetComponent<MeshRenderer>();
+        healthRenderer.material = inactiveMaterial;
+    }
+
     public void Activate()
     {
         healthRenderer.material = highlightMaterial;
@@ -52,11 +59,5 @@ public class PlayerScore : MonoBehaviour, IPointerClickHandler
         Activate();
     }
 
-    private void Start()
-    {
-        photonController = GetComponent<PhotonView>();
-        healthRenderer = GetComponent<MeshRenderer>();
-        healthRenderer.material = inactiveMaterial;
-    }
 
 }

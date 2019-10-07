@@ -132,9 +132,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5373706816933658291}
-  - component: {fileID: 5373706816933658288}
   - component: {fileID: 3922172032885745187}
   - component: {fileID: 3217409441637977029}
+  - component: {fileID: 6609553171816998767}
+  - component: {fileID: 7832324156791427551}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -157,22 +158,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5373706816933658288
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5373706816933658294}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 861f2699a0b159a43b41a3b62038f0fe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  photonView: {fileID: 3922172032885745187}
-  healthPedestal: {fileID: 1511321007799821122, guid: 24f5609e5c184194abb050463ad722ec,
-    type: 3}
-  spawnOffset: 1.5
 --- !u!114 &3922172032885745187
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,3 +195,34 @@ MonoBehaviour:
   m_SynchronizePosition: 1
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
+--- !u!114 &6609553171816998767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5373706816933658294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 861f2699a0b159a43b41a3b62038f0fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  photonView: {fileID: 3922172032885745187}
+  scorePedestalPrefab: {fileID: 1511321007799821122, guid: 24f5609e5c184194abb050463ad722ec,
+    type: 3}
+  managedController: {fileID: 7832324156791427551}
+  posOffset: {x: 2, y: 0, z: 0}
+  spawnOffset: 1.5
+--- !u!114 &7832324156791427551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5373706816933658294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5386fda13860b049a44139ba5d23965, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scorePedestals: []

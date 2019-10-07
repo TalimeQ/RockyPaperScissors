@@ -39,5 +39,6 @@ MonoBehaviour:
   - RotateIfEven
   - RPCSpawnHealthRepresentation
   - RPCRotateIfEvent
+  - RPCEnableChoice
   DisableAutoOpenWizard: 1
   ShowSettings: 1
