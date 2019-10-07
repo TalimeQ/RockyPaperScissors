@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class PlayerHealth : MonoBehaviour, IPointerClickHandler
+public class PlayerScore : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private Material inactiveMaterial;
     [SerializeField] private Material highlightMaterial;
@@ -30,6 +30,7 @@ public class PlayerHealth : MonoBehaviour, IPointerClickHandler
         if(photonController.IsMine)
         {
             NotifyServerClick();
+            GetComponent<PhotonView>()?.RPC("NotifyServerClick", RpcTarget.AllBuffered);
         }   
     }
 

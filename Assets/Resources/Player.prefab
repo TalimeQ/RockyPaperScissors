@@ -169,7 +169,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 861f2699a0b159a43b41a3b62038f0fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initializer: {fileID: 0}
   photonView: {fileID: 3922172032885745187}
   healthPedestal: {fileID: 1511321007799821122, guid: 24f5609e5c184194abb050463ad722ec,
     type: 3}

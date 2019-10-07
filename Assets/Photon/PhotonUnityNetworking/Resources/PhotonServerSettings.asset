@@ -36,5 +36,8 @@ MonoBehaviour:
   - RespawnSpaceship
   - NotifyServerClick
   - SpawnHealthRepresentation
+  - RotateIfEven
+  - RPCSpawnHealthRepresentation
+  - RPCRotateIfEvent
   DisableAutoOpenWizard: 1
   ShowSettings: 1
