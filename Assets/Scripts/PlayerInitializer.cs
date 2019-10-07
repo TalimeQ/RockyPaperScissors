@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Photon.Pun;
 using UnityEngine;
 
 public class PlayerInitializer : MonoBehaviour
@@ -27,7 +26,8 @@ public class PlayerInitializer : MonoBehaviour
             }
            for(int i = 0; i < pointsToScore; i ++)
            {
-                Instantiate(healthPedestal, spawnPosition, Quaternion.identity, transform);
+                GameObject spawnedObj = PhotonNetwork.Instantiate(healthPedestal.name, spawnPosition, Quaternion.identity);
+                spawnedObj.transform.parent = transform;
                 spawnPosition += new Vector3(0, 0, spawnOffset);
            }
         }

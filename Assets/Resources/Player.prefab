@@ -171,6 +171,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initializer: {fileID: 5373706816933658289}
+  photonView: {fileID: 3922172032885745187}
 --- !u!114 &5373706816933658289
 MonoBehaviour:
   m_ObjectHideFlags: 0

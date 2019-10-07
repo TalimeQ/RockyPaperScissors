@@ -31,10 +31,10 @@ namespace RPS.Network
             }
             else
             {
-                if(PhotonNetwork.IsMasterClient)
+                if (RPS.PlayerComp.Player.LocalPlayerInstance == null)
                 {
-                    PhotonNetwork.Instantiate(this.playerPrefab.name, startPositions[0], Quaternion.identity, 0);
-                }   
+                    PhotonNetwork.Instantiate(this.playerPrefab.name, startPositions[PhotonNetwork.CurrentRoom.PlayerCount - 1], Quaternion.identity, 0);
+                }
             }
         }
 
@@ -50,23 +50,17 @@ namespace RPS.Network
         public override void OnJoinedRoom()
         {
             base.OnJoinedRoom();
-            if(playerPrefab != null && !PhotonNetwork.IsMasterClient)
-            {
-                PhotonNetwork.Instantiate(this.playerPrefab.name, startPositions[PhotonNetwork.PlayerList.Length - 1], Quaternion.identity, 0);
-            }
         }
 
         public override void OnPlayerEnteredRoom(Player other)
         {
             Debug.LogFormat("OnPlayerEnteredRoom() {0}", other.NickName); // not seen if you're the player connecting
 
-
             if (PhotonNetwork.IsMasterClient)
             {
                 Debug.LogFormat("OnPlayerEnteredRoom IsMasterClient {0}", PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
-
-
                 LoadArena();
+    
             }
         }
 
