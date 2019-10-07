@@ -20,6 +20,11 @@ public class PlayerHealth : MonoBehaviour, IPointerClickHandler
         isActive = true;
     }
 
+    public void Init(PhotonView owner)
+    {
+        photonController = owner;
+    }
+
     public void OnPointerClick(PointerEventData eventData)
     {
         if(photonController.IsMine)

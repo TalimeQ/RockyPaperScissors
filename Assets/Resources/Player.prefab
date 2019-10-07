@@ -133,7 +133,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5373706816933658291}
   - component: {fileID: 5373706816933658288}
-  - component: {fileID: 5373706816933658289}
   - component: {fileID: 3922172032885745187}
   - component: {fileID: 3217409441637977029}
   m_Layer: 0
@@ -170,20 +169,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 861f2699a0b159a43b41a3b62038f0fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initializer: {fileID: 5373706816933658289}
+  initializer: {fileID: 0}
   photonView: {fileID: 3922172032885745187}
---- !u!114 &5373706816933658289
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5373706816933658294}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65c23e8da11ef4a46a6f028282ba4e45, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   healthPedestal: {fileID: 1511321007799821122, guid: 24f5609e5c184194abb050463ad722ec,
     type: 3}
   spawnOffset: 1.5
