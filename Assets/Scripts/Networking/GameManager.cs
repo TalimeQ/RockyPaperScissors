@@ -33,7 +33,8 @@ namespace RPS.Network
             {
                 if (RPS.PlayerComp.Player.LocalPlayerInstance == null)
                 {
-                    PhotonNetwork.Instantiate(this.playerPrefab.name, startPositions[PhotonNetwork.CurrentRoom.PlayerCount - 1], Quaternion.identity, 0);
+                    GameObject obj = PhotonNetwork.Instantiate(this.playerPrefab.name, startPositions[PhotonNetwork.CurrentRoom.PlayerCount - 1], Quaternion.identity, 0);
+                    obj.GetComponent<RPS.PlayerComp.Player>().Init();
                 }
             }
         }

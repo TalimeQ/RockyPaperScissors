@@ -18,21 +18,12 @@ namespace RPS.PlayerComp
         private int playerScore = 0;
         private int pointsToScore = 5;
 
-        private void Awake()
-        {
-            if (photonView.IsMine)
-            {
-                Player.LocalPlayerInstance = this.gameObject;
-            }
-            DontDestroyOnLoad(this.gameObject);
-        }
-
-        void OnEnable()
+        public void Init()
         {
             Vector3 startPos = transform.position + new Vector3(2, 0, 0);
             if (pointsToScore % 2 == 0)
             {
-                startPos= new Vector3(startPos.x, startPos.y, startPos.z - Mathf.FloorToInt(pointsToScore / 2) * spawnOffset);
+                startPos = new Vector3(startPos.x, startPos.y, startPos.z - Mathf.FloorToInt(pointsToScore / 2) * spawnOffset);
             }
             else
             {
@@ -46,7 +37,15 @@ namespace RPS.PlayerComp
                 photonView.RPC("SpawnHealthRepresentation", RpcTarget.AllBuffered, spawnPosition, 5, photonViewID);
                 spawnPosition += new Vector3(0, 0, 1.5f);
             }
-            
+        }
+
+        private void Awake()
+        {
+            if (photonView.IsMine)
+            {
+                Player.LocalPlayerInstance = this.gameObject;
+            }
+            DontDestroyOnLoad(this.gameObject);
         }
 
         [PunRPC]
