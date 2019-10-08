@@ -110,6 +110,7 @@ MonoBehaviour:
   highlightMaterial: {fileID: 2100000, guid: c790a8ce95034d145ad144514370ef57, type: 2}
   lostMaterial: {fileID: 2100000, guid: eda3c0f207bc74d4aa5c202c8e5543a8, type: 2}
   wonMaterial: {fileID: 2100000, guid: 3f81d050270a2f849a26245023d2d0db, type: 2}
+  healthRenderer: {fileID: 1511321007799821120}
 --- !u!114 &-1520692031961754799
 MonoBehaviour:
   m_ObjectHideFlags: 0

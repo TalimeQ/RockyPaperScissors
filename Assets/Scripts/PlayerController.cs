@@ -6,6 +6,11 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private List<PlayerScore> scorePedestals;
 
+    public void RearrangePedestals()
+    {
+        scorePedestals.Reverse();
+    }
+
     public void AddScorePedestal(PlayerScore pedestalToAdd)
     {
         scorePedestals.Add(pedestalToAdd);

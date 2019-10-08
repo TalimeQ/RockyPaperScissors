@@ -9,8 +9,9 @@ public class PlayerScore : MonoBehaviour, IPointerClickHandler
     [SerializeField] private Material highlightMaterial;
     [SerializeField] private Material lostMaterial;
     [SerializeField] private Material wonMaterial;
+    [SerializeField] private MeshRenderer healthRenderer;
 
-    private MeshRenderer healthRenderer;
+
     private PhotonView photonController;
     private bool isActive = false;
 
@@ -34,7 +35,7 @@ public class PlayerScore : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if(photonController.IsMine)
+        if(photonController.IsMine && isActive)
         {
             NotifyServerClick();
             GetComponent<PhotonView>()?.RPC("NotifyServerClick", RpcTarget.AllBuffered);
@@ -56,7 +57,7 @@ public class PlayerScore : MonoBehaviour, IPointerClickHandler
     [PunRPC]
     private void NotifyServerClick()
     {
-        Activate();
+        healthRenderer.material = wonMaterial;
     }
 
 

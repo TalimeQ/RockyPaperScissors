@@ -4,27 +4,22 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class GameManager : MonoBehaviourPunCallbacks
+public class GameManager : MonoBehaviourPunCallbacks , IPunObservable
 {
-    [SerializeField] PhotonView controlerView;
-    [SerializeField] List<PlayerController> playerList;
+    [SerializeField] PhotonView gameManagerView;
 
+    private List<PlayerController> playerList = new List<PlayerController>();
     private GameState currentGameState = GameState.AwaitingPlayer;
     private bool isComparingScores = false;
     private int maxScore = 5;
     private int battledScorePoint = 0;
 
-    public void AddPlayerController(PlayerController playerController)
-    {
-        playerList.Add(playerController);
-    }
+    #region PhotonCallbacks
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        Debug.Log("Entered!");
         base.OnPlayerEnteredRoom(newPlayer);
-        currentGameState = GameState.Startup;
-        StartCoroutine(GameplayLoop());
+        gameManagerView.RPC("RPCStartGame", RpcTarget.MasterClient);
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -33,33 +28,71 @@ public class GameManager : MonoBehaviourPunCallbacks
         currentGameState = GameState.Finalizing;
     }
 
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(currentGameState);
+            stream.SendNext(battledScorePoint);
+        }
+        else
+        {
+            currentGameState = (GameState)stream.ReceiveNext();
+            battledScorePoint = (int)stream.ReceiveNext();
+        }
+    }
+
+    #endregion
+
+    public void AddPlayerController(PlayerController playerController)
+    {
+        playerList.Add(playerController);
+    }
+
+    private IEnumerator StartupPhase()
+    {
+        yield return new WaitForSeconds(2);
+        currentGameState = GameState.Running;
+        StartCoroutine(GameplayLoop());
+    }
+
     private IEnumerator GameplayLoop()
     {
-        WaitForSeconds delayTime = new WaitForSeconds(10);
-        while(currentGameState == GameState.Running)
+        WaitForSeconds delay = new WaitForSeconds(10);
+        while (currentGameState == GameState.Running)
         {
             EnableChoice();
-            yield return delayTime;
+            yield return delay;
             CompareChoices();
             yield return null;
-            battledScorePoint++;
-            // Wait for chocie
-            // Compare Choice
-            // Score
-
+            FinalizeTurn();
         }
-        
+
+        currentGameState = GameState.Finalizing;
     }
 
     private void EnableChoice()
     {
-        Debug.Log("Chocies goin!");
-        controlerView.RPC("RPCEnableChoice", RpcTarget.All);
+        gameManagerView.RPC("RPCEnableChoice", RpcTarget.All);
     }
 
     private void CompareChoices()
     {
-        Debug.Log("Comparing Choices");
+    }
+
+    private void FinalizeTurn()
+    {
+        bool isLastPoint = battledScorePoint == maxScore - 1;
+        if (isLastPoint)
+        {
+            currentGameState = GameState.Finalizing;
+            //finalize game
+        }
+        else
+        {
+            gameManagerView.RPC("RPCIncreaseScorePoint", RpcTarget.All);
+        }
+
     }
 
     [PunRPC]
@@ -67,9 +100,21 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         foreach(PlayerController calledPlayer in playerList)
         {
-            Debug.Log("RPC choices!");
             calledPlayer.OnChoiceStart(battledScorePoint);
         }
+    }
+
+    [PunRPC]
+    private void RPCStartGame()
+    {
+        currentGameState = GameState.Startup;
+        StartCoroutine(StartupPhase());
+    }
+
+    [PunRPC]
+    private void RPCIncreaseScorePoint()
+    {
+        battledScorePoint++;
     }
 
     enum GameState

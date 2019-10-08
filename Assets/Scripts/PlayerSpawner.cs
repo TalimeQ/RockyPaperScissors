@@ -77,7 +77,7 @@ namespace RPS.PlayerComp
 
 
         [PunRPC]
-        private void RPCSpawnHealthRepresentation(Vector3 spawnPosition, int pointsToScore,int id)
+        private void RPCSpawnHealthRepresentation(Vector3 spawnPosition, int pointsToScore, int id)
         {
             if (scorePedestalPrefab != null)
             {
@@ -93,6 +93,7 @@ namespace RPS.PlayerComp
             if (isEven)
             {
                 transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y + 180, transform.rotation.eulerAngles.z);
+                managedController.RearrangePedestals();
             }
         }
     }
