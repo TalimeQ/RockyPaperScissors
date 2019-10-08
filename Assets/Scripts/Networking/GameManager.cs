@@ -78,6 +78,7 @@ public class GameManager : MonoBehaviourPunCallbacks , IPunObservable
 
     private void CompareChoices()
     {
+        gameManagerView.RPC("RPCCompareChoices", RpcTarget.AllBuffered);
     }
 
     private void FinalizeTurn()
@@ -101,6 +102,15 @@ public class GameManager : MonoBehaviourPunCallbacks , IPunObservable
         foreach(PlayerController calledPlayer in playerList)
         {
             calledPlayer.OnChoiceStart(battledScorePoint);
+        }
+    }
+
+    [PunRPC]
+    private void RPCCompareChoices()
+    {
+        foreach (PlayerController calledPlayer in playerList)
+        {
+            calledPlayer.OnChoiceEnd(battledScorePoint);
         }
     }
 

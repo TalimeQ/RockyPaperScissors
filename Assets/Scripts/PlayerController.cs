@@ -21,12 +21,12 @@ public class PlayerController : MonoBehaviour
         scorePedestals[pedestalToActivate]?.Activate();
     }
 
-    public void OnChoiceEnd()
+    public void OnChoiceEnd(int pedestalToDeactivate)
     {
-        
+        scorePedestals[pedestalToDeactivate]?.Deactivate();
     }
 
-    public void OnCompareScore()
+    public void OnCompareScore(int comparedPedestal)
     {
 
     }

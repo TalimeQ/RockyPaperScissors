@@ -28,6 +28,12 @@ public class PlayerScore : MonoBehaviour, IPointerClickHandler
         isActive = true;
     }
 
+    public void Deactivate()
+    {
+        healthRenderer.material = inactiveMaterial;
+        isActive = false;
+    }
+
     public void Init(PhotonView owner)
     {
         photonController = owner;
