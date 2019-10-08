@@ -226,3 +226,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scorePedestals: []
+  pickupUiPrefab: {fileID: 1802394300980728602, guid: 40c8d8ca7dbd94d41a2aac8d8ebc2479,
+    type: 3}

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Realtime;
 
@@ -10,9 +11,12 @@ public class PlayerScore : MonoBehaviour, IPointerClickHandler
     [SerializeField] private Material lostMaterial;
     [SerializeField] private Material wonMaterial;
     [SerializeField] private MeshRenderer healthRenderer;
-
+    [SerializeField] private List<GameObject> choicesRepresentation;
+    [SerializeField] private Transform spawnPoint;
 
     private PhotonView photonController;
+    private GameObject localRepresentation;
+    private GameObject serverRepresentation;
     private bool isActive = false;
 
     private void Start()
@@ -43,8 +47,7 @@ public class PlayerScore : MonoBehaviour, IPointerClickHandler
     {
         if(photonController.IsMine && isActive)
         {
-            NotifyServerClick();
-            GetComponent<PhotonView>()?.RPC("NotifyServerClick", RpcTarget.AllBuffered);
+            GetComponentInParent<PlayerController>()?.TryGetPickupUi(GetUiCallback);
         }   
     }
 
@@ -59,12 +62,25 @@ public class PlayerScore : MonoBehaviour, IPointerClickHandler
             healthRenderer.material = wonMaterial;
         }
     }
-    
-    [PunRPC]
-    private void NotifyServerClick()
+
+    private void GetUiCallback(int pickedOption)
     {
-        healthRenderer.material = wonMaterial;
+        if(localRepresentation == null)
+        {
+            Instantiate(choicesRepresentation[pickedOption], spawnPoint.position, Quaternion.identity, transform);
+        }
+        else
+        {
+            Destroy(localRepresentation.gameObject);
+            Instantiate(choicesRepresentation[pickedOption], spawnPoint.position, Quaternion.identity, transform);
+        }
+        photonController.RPC("RPCPickupNotify",RpcTarget.All, pickedOption);
     }
 
+    [PunRPC]
+    private void RPCPickupNotify(int pickedOption)
+    {
+        Instantiate(choicesRepresentation[0], spawnPoint.position, Quaternion.identity, transform);
+    }
 
 }
