@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class PlayerController : MonoBehaviour
 {
@@ -38,7 +39,10 @@ public class PlayerController : MonoBehaviour
     
     public void Score(int comparedPedestal)
     {
-        currentScore++;
+        if(PhotonNetwork.IsMasterClient)
+        {
+            currentScore++;
+        }
         scorePedestals[comparedPedestal]?.SetFinished(true);
     }
 

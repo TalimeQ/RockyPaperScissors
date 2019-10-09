@@ -6,7 +6,7 @@ public class PlayerOptionsInput : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyUp(KeyCode.Escape) && !PickupUi.Instance.IsActive)
+        if(Input.GetKeyUp(KeyCode.Escape) && (!PickupUi.Instance.IsActive|| PickupUi.Instance == null))
         {
             ToggleMenu();
         }

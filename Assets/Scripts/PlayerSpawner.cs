@@ -19,7 +19,7 @@ namespace RPS.PlayerComp
         public void Init(int roomPlayerCount)
         {
             SpawnPointsRepresentation();
-            RPCRotateIfEvent(roomPlayerCount);
+            RotateIfEven(roomPlayerCount);
         }
 
         private void Awake()
@@ -87,7 +87,7 @@ namespace RPS.PlayerComp
         }
 
         [PunRPC]
-        private void RPCRotateIfEvent(int roomPlayerCount)
+        private void RPCRotateIfEven(int roomPlayerCount)
         {
             bool isEven = (roomPlayerCount == 2);
             if (isEven)

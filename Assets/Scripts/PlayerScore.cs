@@ -49,14 +49,7 @@ public class PlayerScore : MonoBehaviour, IPointerClickHandler
 
     public void SetFinished(bool isWon)
     {
-        if(isWon)
-        {
-            healthRenderer.material = wonMaterial;
-        }
-        else
-        {
-            healthRenderer.material = lostMaterial;
-        }
+        photonController.RPC("RPCColorOnFinish", RpcTarget.AllBuffered, isWon);
     }
 
     private void Start()
@@ -87,6 +80,19 @@ public class PlayerScore : MonoBehaviour, IPointerClickHandler
     private void RPCPickupNotify(int pickedOption)
     {
         CurrentlyPickedOption = pickedOption;
+    }
+
+    [PunRPC]
+    private void RPCColorOnFinish(bool isWon)
+    {
+        if (isWon)
+        {
+            healthRenderer.material = wonMaterial;
+        }
+        else
+        {
+            healthRenderer.material = lostMaterial;
+        }
     }
 
 }

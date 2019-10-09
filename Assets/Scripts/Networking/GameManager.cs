@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviourPunCallbacks , IPunObservable
 {
     [SerializeField] PhotonView gameManagerView;
 
+    private PlayerController player;
     private List<PlayerController> playerList = new List<PlayerController>();
     private GameState currentGameState = GameState.AwaitingPlayer;
     private bool isComparingScores = false;
@@ -46,7 +47,7 @@ public class GameManager : MonoBehaviourPunCallbacks , IPunObservable
 
     public void AddPlayerController(PlayerController playerController)
     {
-        playerList.Add(playerController);
+        player = playerController;
     }
 
     private IEnumerator StartupPhase()
@@ -100,15 +101,15 @@ public class GameManager : MonoBehaviourPunCallbacks , IPunObservable
         {
             gameManagerView.RPC("RPCIncreaseScorePoint", RpcTarget.All);
         }
-
     }
 
     // TODO Refactor if time allows , or do it properly not in jam style...
     private void CompareScores(int comparedPoint)
     {
+        if (!PhotonNetwork.IsMasterClient) return;
+        TryUpdatePlayerList();
         int playerOneChoice = playerList[0].GetChoice(comparedPoint);
         int playerTwoChoice = playerList[1].GetChoice(comparedPoint);
-
         if( playerOneChoice == playerTwoChoice)
         {
             foreach(PlayerController player in playerList)
@@ -118,13 +119,13 @@ public class GameManager : MonoBehaviourPunCallbacks , IPunObservable
         }
         else if (playerOneChoice == 3 &&  playerTwoChoice == 1)
         {
-            playerList[0].Score(comparedPoint);
-            playerList[1].Lose(comparedPoint);
+            playerList[1].Score(comparedPoint);
+            playerList[0].Lose(comparedPoint);
         }
         else if (playerOneChoice == 1 && playerTwoChoice == 3)
         {
-            playerList[1].Score(comparedPoint);
-            playerList[0].Lose(comparedPoint);
+            playerList[0].Score(comparedPoint);
+            playerList[1].Lose(comparedPoint);
         }
         else
         {
@@ -139,7 +140,18 @@ public class GameManager : MonoBehaviourPunCallbacks , IPunObservable
                 playerList[0].Lose(comparedPoint);
             }
         }
+    }
 
+    private void TryUpdatePlayerList()
+    {
+        if(playerList.Count == 0)
+        {
+            var playerControllerArray = FindObjectsOfType<PlayerController>();
+            foreach(PlayerController updatedController in playerControllerArray)
+            {
+                playerList.Add(updatedController);
+            }
+        }
     }
 
     [PunRPC]
@@ -152,19 +164,13 @@ public class GameManager : MonoBehaviourPunCallbacks , IPunObservable
     [PunRPC]
     private void RPCEnableChoice()
     {
-        foreach (PlayerController calledPlayer in playerList)
-        {
-            calledPlayer.OnChoiceStart(battledScorePoint);
-        }
+        player.OnChoiceStart(battledScorePoint);
     }
 
     [PunRPC]
     private void RPCCompareChoices()
     {
-        foreach (PlayerController calledPlayer in playerList)
-        {
-            calledPlayer.OnChoiceEnd(battledScorePoint);
-        }
+        player.OnChoiceEnd(battledScorePoint);
         CompareScores(battledScorePoint);
     }
 
@@ -172,10 +178,7 @@ public class GameManager : MonoBehaviourPunCallbacks , IPunObservable
     [PunRPC]
     private void RPCFinalizeChoices()
     {
-        foreach (PlayerController calledPlayer in playerList)
-        {
-            calledPlayer.PickupUi?.gameObject.SetActive(false);
-        }
+        player.PickupUi?.gameObject.SetActive(false);
     }
 
     [PunRPC]
@@ -183,8 +186,6 @@ public class GameManager : MonoBehaviourPunCallbacks , IPunObservable
     {
         battledScorePoint++;
     }
-
-
 
     enum GameState
     {

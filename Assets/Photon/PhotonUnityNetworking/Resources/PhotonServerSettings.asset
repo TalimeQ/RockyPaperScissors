@@ -47,5 +47,8 @@ MonoBehaviour:
   - RPCCompareChoices
   - RPCPickupNotify
   - RPCFinalizeChoices
+  - RPCAddController
+  - RPCRotateIfEven
+  - RPCColorOnFinish
   DisableAutoOpenWizard: 1
   ShowSettings: 1
