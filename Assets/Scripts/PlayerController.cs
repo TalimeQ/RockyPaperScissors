@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject pickupUiPrefab;
 
     private PickupUi pickupUi;
+    private int currentScore = 0;
 
     public PickupUi PickupUi { get => pickupUi; set => pickupUi = value; }
 
@@ -30,11 +31,22 @@ public class PlayerController : MonoBehaviour
         scorePedestals[pedestalToDeactivate]?.Deactivate();
     }
 
-    public void OnCompareScore(int comparedPedestal)
+    public int GetChoice(int comparedPedestal)
     {
-
+        return scorePedestals[comparedPedestal].CurrentlyPickedOption;
     }
     
+    public void Score(int comparedPedestal)
+    {
+        currentScore++;
+        scorePedestals[comparedPedestal]?.SetFinished(true);
+    }
+
+    public void Lose(int comparedPedestal)
+    {
+        scorePedestals[comparedPedestal]?.SetFinished(false);
+    }
+
     public void TryGetPickupUi(System.Action<int> pickupCallback)
     {
         if (pickupUi == null)

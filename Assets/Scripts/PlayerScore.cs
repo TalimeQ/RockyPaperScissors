@@ -18,13 +18,9 @@ public class PlayerScore : MonoBehaviour, IPointerClickHandler
     private GameObject localRepresentation;
     private GameObject serverRepresentation;
     private bool isActive = false;
+    private int currentlyPickedOption = 0;
 
-    private void Start()
-    {
-        photonController = GetComponent<PhotonView>();
-        healthRenderer = GetComponent<MeshRenderer>();
-        healthRenderer.material = inactiveMaterial;
-    }
+    public int CurrentlyPickedOption { get => currentlyPickedOption; set => currentlyPickedOption = value; }
 
     public void Activate()
     {
@@ -55,32 +51,42 @@ public class PlayerScore : MonoBehaviour, IPointerClickHandler
     {
         if(isWon)
         {
-            healthRenderer.material = lostMaterial;
+            healthRenderer.material = wonMaterial;
         }
         else
         {
-            healthRenderer.material = wonMaterial;
+            healthRenderer.material = lostMaterial;
         }
     }
 
+    private void Start()
+    {
+        photonController = GetComponent<PhotonView>();
+        healthRenderer = GetComponent<MeshRenderer>();
+        healthRenderer.material = inactiveMaterial;
+    }
+
+
+    // TODO:: Spawn ? on non local machines
     private void GetUiCallback(int pickedOption)
     {
-        if(localRepresentation == null)
+
+        if (localRepresentation == null)
         {
-            Instantiate(choicesRepresentation[pickedOption], spawnPoint.position, Quaternion.identity, transform);
+            localRepresentation = Instantiate(choicesRepresentation[pickedOption], spawnPoint.position, Quaternion.identity, transform);
         }
         else
         {
             Destroy(localRepresentation.gameObject);
             Instantiate(choicesRepresentation[pickedOption], spawnPoint.position, Quaternion.identity, transform);
-        }
-        photonController.RPC("RPCPickupNotify",RpcTarget.All, pickedOption);
+        }     
+        photonController.RPC("RPCPickupNotify", RpcTarget.All, pickedOption);
     }
 
     [PunRPC]
     private void RPCPickupNotify(int pickedOption)
     {
-        Instantiate(choicesRepresentation[0], spawnPoint.position, Quaternion.identity, transform);
+        CurrentlyPickedOption = pickedOption;
     }
 
 }

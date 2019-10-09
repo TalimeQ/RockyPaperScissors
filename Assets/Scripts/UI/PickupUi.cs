@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-public class PickupUi : MonoBehaviour
+public class PickupUi : Singleton<PickupUi>
 {
     private System.Action<int> uiCallback;
     private bool isActive = false;
@@ -8,9 +8,7 @@ public class PickupUi : MonoBehaviour
 
     public void Activate(System.Action<int> pickupCallback)
     {
-        Debug.Log("activated!");
         uiCallback = pickupCallback;
-        Debug.Log(gameObject);
         gameObject.SetActive(true);
         IsActive = true;
     }

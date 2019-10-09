@@ -59,12 +59,15 @@ public class GameManager : MonoBehaviourPunCallbacks , IPunObservable
     private IEnumerator GameplayLoop()
     {
         WaitForSeconds delay = new WaitForSeconds(10);
+        WaitForSeconds shortDelay = new WaitForSeconds(2);
         while (currentGameState == GameState.Running)
         {
             EnableChoice();
             yield return delay;
+            FinalizeChoices();
+            yield return shortDelay;
             CompareChoices();
-            yield return null;
+            yield return shortDelay;
             FinalizeTurn();
         }
 
@@ -74,6 +77,11 @@ public class GameManager : MonoBehaviourPunCallbacks , IPunObservable
     private void EnableChoice()
     {
         gameManagerView.RPC("RPCEnableChoice", RpcTarget.All);
+    }
+
+    private void FinalizeChoices()
+    {
+        gameManagerView.RPC("RPCFinalizeChoices", RpcTarget.All);
     }
 
     private void CompareChoices()
@@ -87,7 +95,6 @@ public class GameManager : MonoBehaviourPunCallbacks , IPunObservable
         if (isLastPoint)
         {
             currentGameState = GameState.Finalizing;
-            //finalize game
         }
         else
         {
@@ -96,10 +103,56 @@ public class GameManager : MonoBehaviourPunCallbacks , IPunObservable
 
     }
 
+    // TODO Refactor if time allows , or do it properly not in jam style...
+    private void CompareScores(int comparedPoint)
+    {
+        int playerOneChoice = playerList[0].GetChoice(comparedPoint);
+        int playerTwoChoice = playerList[1].GetChoice(comparedPoint);
+
+        if( playerOneChoice == playerTwoChoice)
+        {
+            foreach(PlayerController player in playerList)
+            {
+                player.Lose(comparedPoint);
+            }
+        }
+        else if (playerOneChoice == 3 &&  playerTwoChoice == 1)
+        {
+            playerList[0].Score(comparedPoint);
+            playerList[1].Lose(comparedPoint);
+        }
+        else if (playerOneChoice == 1 && playerTwoChoice == 3)
+        {
+            playerList[1].Score(comparedPoint);
+            playerList[0].Lose(comparedPoint);
+        }
+        else
+        {
+            if(playerOneChoice > playerTwoChoice)
+            {
+                playerList[0].Score(comparedPoint);
+                playerList[1].Lose(comparedPoint);
+            }
+            else
+            {
+                playerList[1].Score(comparedPoint);
+                playerList[0].Lose(comparedPoint);
+            }
+        }
+
+    }
+
+    [PunRPC]
+    private void RPCStartGame()
+    {
+        currentGameState = GameState.Startup;
+        StartCoroutine(StartupPhase());
+    }
+
     [PunRPC]
     private void RPCEnableChoice()
     {
-        foreach(PlayerController calledPlayer in playerList)
+        foreach (PlayerController calledPlayer in playerList)
         {
             calledPlayer.OnChoiceStart(battledScorePoint);
         }
@@ -112,13 +165,17 @@ public class GameManager : MonoBehaviourPunCallbacks , IPunObservable
         {
             calledPlayer.OnChoiceEnd(battledScorePoint);
         }
+        CompareScores(battledScorePoint);
     }
 
+
     [PunRPC]
-    private void RPCStartGame()
+    private void RPCFinalizeChoices()
     {
-        currentGameState = GameState.Startup;
-        StartCoroutine(StartupPhase());
+        foreach (PlayerController calledPlayer in playerList)
+        {
+            calledPlayer.PickupUi?.gameObject.SetActive(false);
+        }
     }
 
     [PunRPC]
@@ -126,6 +183,8 @@ public class GameManager : MonoBehaviourPunCallbacks , IPunObservable
     {
         battledScorePoint++;
     }
+
+
 
     enum GameState
     {

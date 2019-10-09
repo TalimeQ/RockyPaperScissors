@@ -46,5 +46,6 @@ MonoBehaviour:
   - RPCStartGame
   - RPCCompareChoices
   - RPCPickupNotify
+  - RPCFinalizeChoices
   DisableAutoOpenWizard: 1
   ShowSettings: 1
